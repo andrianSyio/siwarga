@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Warga v5.3 (Terhubung)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* CSS Lengkap dari V5 (Tidak ada perubahan di sini) */
+        :root {
+            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
+            --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #7A8294;
+            --border-color: #EFF1F5; --accent-green: #27AE60; --accent-red: #EB5757;
+        }
+        @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-primary); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', sans-serif; }
+        .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background-color: var(--background-color); position: relative; padding-bottom: 110px; }
+        .section-title { font-size: 20px; font-weight: 600; padding: 0 20px; margin: 24px 0 16px 0; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); }
+        .main-header { padding: 16px 20px; animation: slideUpFadeIn 0.5s ease-out forwards; }
+        .greeting-card { display: flex; align-items: center; background-color: var(--card-background); padding: 12px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 106, 255, 0.1); }
+        .user-avatar { width: 48px; height: 48px; border-radius: 16px; margin-right: 12px; object-fit: cover; }
+        .greeting-text h1 { font-size: 18px; }
+        .greeting-text p { font-size: 14px; color: var(--text-secondary); }
+        .search-icon { font-size: 24px; color: var(--text-secondary); margin-left: auto; padding: 12px; border-radius: 50%; transition: background-color 0.2s ease; }
+        .search-icon:hover { background-color: var(--primary-light); }
+        a.card-link { text-decoration: none; color: inherit; } /* Style untuk link kartu */
+        .dues-status-card { margin: 0 20px 24px 20px; padding: 20px; border-radius: 24px; background: linear-gradient(135deg, #1A2980, #26D0CE); color: white; box-shadow: 0 12px 32px rgba(38, 208, 206, 0.3); animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); }
+        .dues-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .dues-header h3 { font-size: 18px; opacity: 0.9; }
+        .dues-header .status-pill { background-color: rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .dues-body { margin-top: 12px; }
+        .dues-body p { font-size: 28px; font-weight: 700; }
+        .dues-body .due-date { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+        .quick-services { padding: 0 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .service-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-primary); animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); transition: transform 0.2s ease; }
+        .service-item:hover { transform: translateY(-5px); }
+        .service-item .icon-wrapper { width: 64px; height: 64px; border-radius: 22px; background-color: var(--card-background); display: grid; place-items: center; font-size: 28px; color: var(--primary-color); margin-bottom: 8px; border: 1px solid var(--border-color); }
+        .service-item span { font-size: 12px; font-weight: 500; text-align: center; }
+        .announcement-card { background-color: var(--card-background); border-radius: 24px; margin: 0 20px 24px 20px; box-shadow: 0 8px 40px rgba(122, 130, 148, 0.1); animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); }
+        .announcement-header { position: relative; }
+        .announcement-image { width: 100%; height: 180px; object-fit: cover; border-radius: 24px 24px 0 0; }
+        .tag { position: absolute; top: 16px; left: 16px; background-color: rgba(0,0,0,0.4); backdrop-filter: blur(5px); color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .card-content { padding: 20px; }
+        .card-content h3 { font-size: 20px; margin-bottom: 12px; }
+        .card-content ul { list-style: none; margin-top: 12px; }
+        .card-content ul li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+        .card-content ul li i { font-size: 20px; color: var(--primary-color); }
+        .card-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .author-info { display: flex; align-items: center; gap: 8px; }
+        .author-avatar { width: 32px; height: 32px; border-radius: 12px; object-fit: cover; }
+        .author-info span { font-size: 14px; font-weight: 500; }
+        .cta-button { background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: 14px; text-decoration: none; font-weight: 600; font-size: 14px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .cta-button:hover { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0, 106, 255, 0.3); }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 8px; border-radius: 28px; box-shadow: 0 10px 40px rgba(0, 106, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.5); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); z-index: 1; }
+        .nav-item.active { color: var(--primary-color); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <header class="main-header" style="--delay: 0.1s;">
+            <div class="greeting-card">
+                <img src="https://i.pravatar.cc/150?u=budi" alt="Avatar Pengguna" class="user-avatar">
+                <div class="greeting-text"><h1>Halo, Budi!</h1><p>Selamat datang</p></div>
+                <i class="ph-bold ph-magnifying-glass search-icon"></i>
+            </div>
+        </header>
+
+        <main>
+            <a href="iuran.html" class="card-link">
+                <div class="dues-status-card" style="--delay: 0.2s;">
+                    <div class="dues-header"><h3>Iuran September</h3><span class="status-pill">LUNAS</span></div>
+                    <div class="dues-body"><p>Rp 75.000</p><div class="due-date">Terbayar pada 5 Sep 2025</div></div>
+                </div>
+            </a>
+
+            <h2 class="section-title" style="--delay: 0.3s;">Layanan Warga</h2>
+            <section class="quick-services">
+                <a href="#" class="service-item" style="--delay: 0.4s;"><div class="icon-wrapper"><i class="ph-bold ph-files"></i></div><span>Surat RT</span></a>
+                <a href="#" class="service-item" style="--delay: 0.5s;"><div class="icon-wrapper"><i class="ph-bold ph-megaphone"></i></div><span>Pengumuman</span></a>
+                <a href="iuran.html" class="service-item" style="--delay: 0.6s;"><div class="icon-wrapper"><i class="ph-bold ph-wallet"></i></div><span>Iuran</span></a>
+                <a href="lapor.html" class="service-item" style="--delay: 0.7s;"><div class="icon-wrapper"><i class="ph-bold ph-broadcast"></i></div><span>Lapor</span></a>
+            </section>
+            
+            <h2 class="section-title" style="--delay: 0.8s;">Info Terkini</h2>
+            <section class="feed">
+                <div class="announcement-card" style="--delay: 0.9s;">
+                    <div class="announcement-header"><img src="https://images.unsplash.com/photo-1517457373958-b704d5813b66?q=80&w=800&auto-format&fit=crop" alt="Acara" class="announcement-image"><span class="tag">#ACARA</span></div>
+                    <div class="card-content"><h3>Panggung Gembira & Bazar Malam Minggu</h3><ul><li><i class="ph-fill ph-map-pin"></i> <b>Lokasi:</b> Lapangan Utama</li><li><i class="ph-fill ph-clock"></i> <b>Waktu:</b> Sabtu, 13 Sep 2025, 19:00</li></ul></div>
+                    <div class="card-footer"><div class="author-info"><img src="https://i.pravatar.cc/150?u=karangtaruna" alt="Avatar" class="author-avatar"><span>Karang Taruna</span></div><a href="#" class="cta-button">Lihat Detail</a></div>
+                </div>
+                 </section>
+        </main>
+        
+        <nav class="bottom-nav">
+             <a href="index.html" class="nav-item active"><i class="ph-fill ph-house"></i></a>
+             <a href="jelajah.html" class="nav-item"><i class="ph-bold ph-rocket-launch"></i></a>
+             <a href="iuran.html" class="nav-item"><i class="ph-bold ph-wallet"></i></a>
+             <a href="profil.html" class="nav-item"><i class="ph-bold ph-user-circle"></i></a>
+        </nav>
+    </div>
+</body>
+</html>

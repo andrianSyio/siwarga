@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Laporan v2</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* === BASE STYLES === */
+        :root {
+            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
+            --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #7A8294;
+            --border-color: #EFF1F5; --accent-red: #EB5757;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-primary); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', sans-serif; }
+        .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background-color: var(--background-color); position: relative; }
+        
+        /* === [PERBAIKAN] STICKY PAGE HEADER === */
+        .page-header {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px; background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; /* Membuat header menempel */
+            top: 0;
+            z-index: 100; /* Memastikan header di atas konten lain */
+        }
+        .page-header h1 { font-size: 22px; }
+        .back-button { font-size: 24px; color: var(--text-primary); }
+
+        /* === FORM CONTAINER === */
+        .form-container {
+            padding: 24px 20px;
+            animation: fadeIn 0.4s ease;
+        }
+        .form-section { margin-bottom: 24px; }
+        .form-section h2 {
+            font-size: 16px; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 12px;
+        }
+
+        /* === [PERBAIKAN] KATEGORI INTERAKTIF === */
+        .category-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .category-card-wrapper {
+            display: block; /* Agar label bisa di-styling */
+            position: relative;
+            cursor: pointer;
+        }
+        /* Sembunyikan radio button asli secara total */
+        .category-card-wrapper input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .category-card-content {
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease-in-out; /* Animasi halus */
+        }
+        .category-card-content i {
+            font-size: 32px; color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .category-card-content p { font-weight: 500; }
+        /* Style untuk kartu yang dipilih */
+        .category-card-wrapper input:checked + .category-card-content {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+            transform: scale(1.05); /* Efek membesar sedikit */
+        }
+
+        /* === FORM INPUT STYLES === */
+        .form-input {
+            width: 100%; padding: 14px 16px;
+            border: 1px solid var(--border-color); border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 16px;
+            background-color: var(--card-background);
+        }
+        .form-input:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        textarea.form-input { min-height: 120px; resize: vertical; }
+        .upload-area {
+            border: 2px dashed var(--border-color); border-radius: 12px;
+            padding: 24px; text-align: center; cursor: pointer;
+        }
+        .upload-area i { font-size: 32px; color: var(--text-secondary); margin-bottom: 8px; }
+        .upload-area p { font-weight: 500; color: var(--text-secondary); }
+        .checkbox-container { display: flex; align-items: center; gap: 12px; background-color: var(--card-background); padding: 16px; border-radius: 12px; }
+        #anonim { width: 1.2em; height: 1.2em; }
+        .submit-button {
+            width: 100%; padding: 18px; border: none; border-radius: 16px;
+            background-color: var(--primary-color); color: white;
+            font-family: 'Lexend', sans-serif; font-size: 18px; font-weight: 600;
+            cursor: pointer; transition: background-color 0.2s ease;
+        }
+        .submit-button:hover { background-color: #004CB3; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="page-header">
+            <a href="index.html" class="back-button"><i class="ph-bold ph-arrow-left"></i></a>
+            <h1>Buat Laporan</h1>
+        </header>
+
+        <main class="form-container">
+            <form action="#">
+                <div class="form-section">
+                    <h2>1. Pilih Kategori Laporan</h2>
+                    <div class="category-grid">
+                        <label class="category-card-wrapper">
+                            <input type="radio" name="kategori" value="fasilitas" checked>
+                            <div class="category-card-content">
+                                <i class="ph-bold ph-wrench"></i>
+                                <p>Fasilitas</p>
+                            </div>
+                        </label>
+                        <label class="category-card-wrapper">
+                            <input type="radio" name="kategori" value="keamanan">
+                            <div class="category-card-content">
+                                <i class="ph-bold ph-shield-warning"></i>
+                                <p>Keamanan</p>
+                            </div>
+                        </label>
+                        <label class="category-card-wrapper">
+                            <input type="radio" name="kategori" value="kebersihan">
+                            <div class="category-card-content">
+                                <i class="ph-bold ph-trash"></i>
+                                <p>Kebersihan</p>
+                            </div>
+                        </label>
+                        <label class="category-card-wrapper">
+                            <input type="radio" name="kategori" value="lainnya">
+                            <div class="category-card-content">
+                                <i class="ph-bold ph-dots-three-circle"></i>
+                                <p>Lainnya</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>2. Tulis Rincian Laporan</h2>
+                    <input type="text" class="form-input" placeholder="Judul Laporan" style="margin-bottom: 12px;">
+                    <textarea class="form-input" placeholder="Tuliskan detail laporan Anda di sini..."></textarea>
+                </div>
+
+                <div class="form-section">
+                    <h2>3. Lampirkan Foto (Opsional)</h2>
+                    <div class="upload-area">
+                        <i class="ph-bold ph-camera-plus"></i>
+                        <p>Ketuk untuk mengunggah foto</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>4. Informasi Tambahan</h2>
+                    <input type="text" class="form-input" placeholder="Lokasi Kejadian (Contoh: Depan Blok C No. 15)" style="margin-bottom: 12px;">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="anonim" name="anonim">
+                        <label for="anonim">Kirim sebagai anonim</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">Kirim Laporan</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
