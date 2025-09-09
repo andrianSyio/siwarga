@@ -2,193 +2,243 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
-    <title>Info Iuran Warga</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dasbor Keuangan - SiWarga</title>
+    
+    <link rel="icon" type="image/png" href="path/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
     <style>
-        /* === BASE STYLES (Disesuaikan dari V5) === */
         :root {
-            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
-            --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #7A8294;
-            --border-color: #EFF1F5; --accent-green: #27AE60; --accent-red: #EB5757;
+            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #FFFFFF;
+            --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #8A94A6;
+            --border-color: #F1F3F6; --accent-green: #27AE60; --accent-red: #EB5757;
+            --soft-green-bg: #EAF7EE; --soft-red-bg: #FDEDED;
+            --soft-gray-bg: #F8F9FD;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-primary); }
         h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', sans-serif; }
         .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background-color: var(--background-color); position: relative; padding-bottom: 110px; }
-        
-        /* === PAGE HEADER === */
-        .page-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px;
-        }
+        .page-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
         .page-header h1 { font-size: 22px; }
-        .page-header .history-button {
-            background-color: var(--primary-light); color: var(--primary-color);
-            padding: 8px 16px; border-radius: 14px; text-decoration: none;
-            font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;
-        }
-
-        /* === TOTAL KAS CARD === */
-        .total-funds-card {
-            margin: 0 20px 24px 20px; padding: 24px; border-radius: 24px;
-            background: linear-gradient(135deg, var(--primary-color), #004CB3);
-            color: white; text-align: center;
-            box-shadow: 0 12px 32px rgba(0, 106, 255, 0.3);
-            animation: slideUp 0.5s ease-out;
-        }
-        .total-funds-card h2 { font-size: 16px; font-weight: 500; opacity: 0.8; }
-        .total-funds-card p { font-family: 'Lexend', sans-serif; font-size: 40px; font-weight: 700; margin-top: 8px; }
-
-        /* === AKTIVITAS TERBARU FEED === */
-        .feed-section { padding: 0 20px; }
-        .feed-section h3 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
-        .payment-feed { list-style: none; }
-        .feed-item {
-            display: flex; align-items: center; gap: 16px;
-            background-color: var(--card-background);
-            padding: 16px; border-radius: 16px; margin-bottom: 12px;
-            animation: fadeIn 0.5s ease-out forwards;
-            animation-delay: var(--delay);
-            opacity: 0; /* Start hidden for animation */
-        }
-        .feed-item .avatar {
-            width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
-            background-color: var(--primary-light); display: grid; place-items: center;
-            font-weight: 600; color: var(--primary-color);
-        }
-        .feed-item .info { flex-grow: 1; }
-        .feed-item .info h4 { font-size: 16px; font-weight: 600; }
-        .feed-item .info p { font-size: 14px; color: var(--text-secondary); }
-        .feed-item .amount { font-size: 16px; font-weight: 600; color: var(--accent-green); }
-        
-        /* === MODAL POP-UP (Pure CSS Trick) === */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 2000;
-        }
-        .modal-overlay:target {
-            opacity: 1; visibility: visible;
-        }
-        .modal-content {
-            background-color: var(--background-color); border-radius: 24px;
-            width: 90%; max-width: 420px;
-            max-height: 80vh; overflow-y: auto;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
-            transform: scale(0.9); transition: transform 0.3s ease;
-        }
-        .modal-overlay:target .modal-content {
-            transform: scale(1);
-        }
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; background-color: var(--background-color);
-        }
-        .modal-header h2 { font-size: 18px; }
-        .close-button { text-decoration: none; color: var(--text-secondary); font-size: 28px; }
-        .history-list { padding: 20px; list-style: none; }
-        .history-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 0; border-bottom: 1px solid var(--border-color);
-        }
-        .history-item:last-child { border-bottom: none; }
-        .history-item .month h4 { font-size: 16px; }
-        .history-item .month p { font-size: 12px; color: var(--text-secondary); }
-        .history-item .status { font-weight: 600; padding: 6px 12px; border-radius: 20px; }
-        .status.lunas { background-color: #EAF7EE; color: var(--accent-green); }
-        
-        /* === BOTTOM NAVIGATION === */
-        /* ... (styles remain the same) ... */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 8px; border-radius: 28px; box-shadow: 0 10px 40px rgba(0, 106, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.5); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); z-index: 1; }
+        .history-button { background-color: var(--primary-light); color: var(--primary-color); padding: 8px 16px; border-radius: 14px; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .finance-dashboard { padding: 0 20px; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .summary-card { padding: 20px; border-radius: 20px; }
+        .summary-card h2 { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+        .summary-card p { font-size: 24px; font-weight: 700; margin-top: 8px; }
+        .summary-card.income { background-color: var(--soft-green-bg); }
+        .summary-card.income p { color: var(--accent-green); }
+        .summary-card.expense { background-color: var(--soft-red-bg); }
+        .summary-card.expense p { color: var(--accent-red); }
+        .summary-card.total { grid-column: 1 / -1; background: linear-gradient(135deg, #1A2980, #26D0CE); color: white; }
+        .summary-card.total h2 { color: white; opacity: 0.8; }
+        .summary-card.total p { font-size: 32px; color: white; }
+        .chart-container { background-color: var(--soft-gray-bg); margin: 24px 20px; padding: 20px; border-radius: 20px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .chart-header h3 { font-size: 18px; }
+        .chart-legend { display: flex; gap: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .legend-dot.income { background-color: var(--accent-green); }
+        .legend-dot.expense { background-color: var(--accent-red); }
+        .chart-bars { display: flex; justify-content: space-around; height: 150px; align-items: flex-end; gap: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .bar-group { flex-grow: 1; text-align: center; display: flex; justify-content: center; align-items: flex-end; gap: 4px; }
+        .bar { display: inline-block; width: 12px; border-radius: 6px; transition: height 0.5s ease-out; }
+        .bar.income { background-color: var(--accent-green); }
+        .bar.expense { background-color: var(--accent-red); }
+        .chart-labels { display: flex; justify-content: space-around; margin-top: 8px; }
+        .label { flex-grow: 1; text-align: center; font-size: 12px; color: var(--text-secondary); }
+        .activity-section { padding: 0 20px; }
+        .tab-nav { display: flex; gap: 12px; border-bottom: 1px solid var(--border-color); }
+        .tab-button { padding: 12px 0; border: none; background: none; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-secondary); cursor: pointer; position: relative; }
+        .tab-button.active { color: var(--primary-color); }
+        .tab-button.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background-color: var(--primary-color); border-radius: 2px; }
+        .tab-content { padding-top: 24px; min-height: 100px; }
+        .activity-item { display: flex; align-items: center; gap: 16px; background-color: var(--soft-gray-bg); padding: 16px; border-radius: 16px; margin-bottom: 12px; }
+        .activity-item .icon-wrapper { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 20px; }
+        .activity-item .icon-wrapper.income { background-color: #FFFFFF; color: var(--accent-green); }
+        .activity-item .icon-wrapper.expense { background-color: #FFFFFF; color: var(--accent-red); }
+        .activity-item .info h4 { font-size: 16px; font-weight: 600; }
+        .activity-item .info p { font-size: 14px; color: var(--text-secondary); }
+        .activity-item .amount { font-size: 16px; font-weight: 600; margin-left: auto; }
+        .activity-item .amount.income { color: var(--accent-green); }
+        .activity-item .amount.expense { color: var(--accent-red); }
+        /* [PERBAIKAN] BOTTOM NAV BAR */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 440px; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 8px; border-radius: 28px; box-shadow: 0 12px 48px rgba(138, 148, 166, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); }
         .nav-item.active { color: var(--primary-color); }
     </style>
 </head>
 <body>
-
-    <div id="riwayat-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Riwayat Iuran Saya</h2>
-                <a href="#" class="close-button"><i class="ph-bold ph-x-circle"></i></a>
-            </div>
-            <ul class="history-list">
-                <li class="history-item">
-                    <div class="month"><h4>September 2025</h4><p>Dibayar pada 5 Sep</p></div>
-                    <span class="status lunas">LUNAS</span>
-                </li>
-                <li class="history-item">
-                    <div class="month"><h4>Agustus 2025</h4><p>Dibayar pada 4 Agu</p></div>
-                    <span class="status lunas">LUNAS</span>
-                </li>
-                <li class="history-item">
-                    <div class="month"><h4>Juli 2025</h4><p>Dibayar pada 6 Jul</p></div>
-                    <span class="status lunas">LUNAS</span>
-                </li>
-                </ul>
-        </div>
-    </div>
-
     <div class="app-container">
         <header class="page-header">
-            <a href="index.html" class="nav-item" style="width:auto; height:auto; font-size:24px;"><i class="ph-bold ph-arrow-left"></i></a>
-            <h1>Kas</h1>
-            <a href="#riwayat-modal" class="history-button"><i class="ph-bold ph-receipt"></i> Riwayat Saya</a>
+            <h1>Dasbor Keuangan</h1>
+            <a href="#" class="history-button"><i class="ph-bold ph-receipt"></i> Riwayat Saya</a>
         </header>
 
         <main>
-            <div class="total-funds-card">
-                <h2>Total Kas Terkumpul</h2>
-                <p>Rp 42.000.000</p>
-            </div>
+            <section class="finance-dashboard">
+                <div class="summary-grid">
+                    <div class="summary-card income"><h2 id="pemasukan-title">Pemasukan Bulan Ini</h2><p id="total-income">Rp 0</p></div>
+                    <div class="summary-card expense"><h2 id="pengeluaran-title">Pengeluaran Bulan Ini</h2><p id="total-expense">Rp 0</p></div>
+                    <div class="summary-card total"><h2>Total Saldo Kas</h2><p id="total-balance">Rp 0</p></div>
+                </div>
+            </section>
 
-            <section class="feed-section">
-                <h3>Aktivitas Terbaru</h3>
-                <ul class="payment-feed">
-                    <li class="feed-item" style="--delay: 0.1s;"><div class="avatar">AS</div><div class="info"><h4>Agus Setiawan</h4><p>5 menit yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.2s;"><div class="avatar">CW</div><div class="info"><h4>Citra Wulandari</h4><p>30 menit yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.3s;"><div class="avatar">DP</div><div class="info"><h4>Dian Permata</h4><p>1 jam yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.4s;"><div class="avatar">ES</div><div class="info"><h4>Eko Susanto</h4><p>3 jam yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.5s;"><div class="avatar">FN</div><div class="info"><h4>Fitriani</h4><p>Hari ini, 14:20</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.6s;"><div class="avatar">GS</div><div class="info"><h4>Guntur Saputro</h4><p>Hari ini, 11:05</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.7s;"><div class="avatar">HS</div><div class="info"><h4>Hendra S.</h4><p>Hari ini, 09:15</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.8s;"><div class="avatar">IA</div><div class="info"><h4>Indah Aulia</h4><p>Kemarin</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 0.9s;"><div class="avatar">JR</div><div class="info"><h4>Joko Riyadi</h4><p>Kemarin</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.0s;"><div class="avatar">KN</div><div class="info"><h4>Kartika Ningrum</h4><p>Kemarin</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.1s;"><div class="avatar">LM</div><div class="info"><h4>Lina Marlina</h4><p>2 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.2s;"><div class="avatar">MN</div><div class="info"><h4>Muhammad Nur</h4><p>2 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.3s;"><div class="avatar">NR</div><div class="info"><h4>Nadia Rahma</h4><p>3 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.4s;"><div class="avatar">OP</div><div class="info"><h4>Oscar Permadi</h4><p>3 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.5s;"><div class="avatar">PS</div><div class="info"><h4>Putri S.</h4><p>3 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.6s;"><div class="avatar">RM</div><div class="info"><h4>Rian Maulana</h4><p>4 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.7s;"><div class="avatar">SN</div><div class="info"><h4>Siti Nurjanah</h4><p>4 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.8s;"><div class="avatar">TR</div><div class="info"><h4>Toni P.</h4><p>5 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 1.9s;"><div class="avatar">UD</div><div class="info"><h4>Umar Dhani</h4><p>5 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                    <li class="feed-item" style="--delay: 2.0s;"><div class="avatar">VA</div><div class="info"><h4>Vina Astuti</h4><p>5 hari yang lalu</p></div><span class="amount">Rp 75.000</span></li>
-                </ul>
+            <section class="chart-container">
+                <div class="chart-header">
+                    <h3>Ringkasan 3 Bulan</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span class="legend-dot income"></span> Pemasukan</div>
+                        <div class="legend-item"><span class="legend-dot expense"></span> Pengeluaran</div>
+                    </div>
+                </div>
+                <div class="chart-bars">
+                    <div class="bar-group" data-month="Jul"><div class="bar income"></div><div class="bar expense"></div></div>
+                    <div class="bar-group" data-month="Aug"><div class="bar income"></div><div class="bar expense"></div></div>
+                    <div class="bar-group" data-month="Sep"><div class="bar income"></div><div class="bar expense"></div></div>
+                </div>
+                <div class="chart-labels">
+                    <div class="label">Jul</div><div class="label">Agu</div><div class="label">Sep</div>
+                </div>
+            </section>
+
+            <section class="activity-section">
+                <nav class="tab-nav">
+                    <button class="tab-button active" data-tab="semua">Semua</button>
+                    <button class="tab-button" data-tab="pemasukan">Pemasukan</button>
+                    <button class="tab-button" data-tab="pengeluaran">Pengeluaran</button>
+                </nav>
+                <div class="tab-content" id="activity-list-container">
+                    </div>
             </section>
         </main>
         
         <nav class="bottom-nav">
              <a href="index.html" class="nav-item"><i class="ph-bold ph-house"></i></a>
-             <a href="jelajah.html" class="nav-item"><i class="ph-bold ph-rocket-launch"></i></a>
-             <a href="iuran.html" class="nav-item active"><i class="ph-fill ph-wallet"></i></a>
+             <a href="user.html" class="nav-item"><i class="ph-bold ph-users"></i></a>
+             <a href="#" class="nav-item"><i class="ph-bold ph-chat-dots"></i></a>
              <a href="profil.html" class="nav-item"><i class="ph-bold ph-user-circle"></i></a>
         </nav>
     </div>
-</body>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATABASE CONTOH ---
+            const transactions = [
+                { type: 'income', description: 'Iuran dari Bpk. Aris', amount: 75000, date: '2025-09-08' },
+                { type: 'income', description: 'Iuran dari Bpk. Budi', amount: 75000, date: '2025-09-05' },
+                { type: 'expense', description: 'Bayar Listrik PJU', amount: 350000, date: '2025-09-04' },
+                { type: 'income', description: 'Iuran dari Ibu Siti', amount: 75000, date: '2025-09-03' },
+                { type: 'expense', description: 'Beli alat kerja bakti', amount: 500000, date: '2025-09-01' },
+                { type: 'income', description: 'Sumbangan Acara 17an', amount: 1500000, date: '2025-08-15' },
+                { type: 'expense', description: 'Biaya Konsumsi Rapat', amount: 250000, date: '2025-08-10' },
+                { type: 'income', description: 'Iuran Warga Agustus', amount: 4500000, date: '2025-08-05' },
+                { type: 'income', description: 'Iuran Warga Juli', amount: 4250000, date: '2025-07-06' },
+                { type: 'expense', description: 'Perbaikan Jalan', amount: 1200000, date: '2025-07-20' },
+            ];
+
+            const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+
+            const activityContainer = document.getElementById('activity-list-container');
+            const tabs = document.querySelectorAll('.tab-button');
+
+            // --- FUNGSI UNTUK MENAMPILKAN DAFTAR TRANSAKSI ---
+            function renderTransactions(filter = 'semua') {
+                activityContainer.innerHTML = ''; // Kosongkan daftar
+                let filtered = transactions;
+                if (filter === 'pemasukan') {
+                    filtered = transactions.filter(t => t.type === 'income');
+                } else if (filter === 'pengeluaran') {
+                    filtered = transactions.filter(t => t.type === 'expense');
+                }
+
+                if (filtered.length === 0) {
+                    activityContainer.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">Tidak ada transaksi.</p>';
+                    return;
+                }
+
+                filtered.sort((a, b) => new Date(b.date) - new Date(a.date)); // Urutkan dari terbaru
+
+                filtered.forEach(t => {
+                    const itemClass = t.type;
+                    const iconClass = t.type === 'income' ? 'ph-arrow-down-left' : 'ph-arrow-up-right';
+                    const sign = t.type === 'income' ? '+' : '-';
+                    const date = new Date(t.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                    const itemHTML = `
+                        <div class="activity-item">
+                            <div class="icon-wrapper ${itemClass}"><i class="ph-bold ${iconClass}"></i></div>
+                            <div class="info">
+                                <h4>${t.description}</h4>
+                                <p>${date}</p>
+                            </div>
+                            <span class="amount ${itemClass}">${sign} ${formatRupiah(t.amount)}</span>
+                        </div>`;
+                    activityContainer.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+
+            // --- FUNGSI UNTUK MENGAKTIFKAN TAB ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderTransactions(tab.dataset.tab);
+                });
+            });
+
+            // --- FUNGSI UNTUK MENGUPDATE DASBOR & GRAFIK ---
+            function updateDashboardAndChart() {
+                const now = new Date('2025-09-09');
+                const currentMonth = now.getMonth();
+                const currentMonthName = now.toLocaleString('id-ID', { month: 'long' });
+
+                document.getElementById('pemasukan-title').textContent = `Pemasukan ${currentMonthName}`;
+                document.getElementById('pengeluaran-title').textContent = `Pengeluaran ${currentMonthName}`;
+
+                const monthlyIncome = transactions.filter(t => t.type === 'income' && new Date(t.date).getMonth() === currentMonth).reduce((sum, t) => sum + t.amount, 0);
+                const monthlyExpense = transactions.filter(t => t.type === 'expense' && new Date(t.date).getMonth() === currentMonth).reduce((sum, t) => sum + t.amount, 0);
+                const totalBalance = transactions.reduce((sum, t) => t.type === 'income' ? sum + t.amount : sum - t.amount, 40000000); // Saldo awal 40jt
+
+                document.getElementById('total-income').textContent = `+ ${formatRupiah(monthlyIncome)}`;
+                document.getElementById('total-expense').textContent = `- ${formatRupiah(monthlyExpense)}`;
+                document.getElementById('total-balance').textContent = formatRupiah(totalBalance);
+
+                // Update Grafik
+                const monthlyData = {};
+                transactions.forEach(t => {
+                    const month = new Date(t.date).toLocaleString('en-US', { month: 'short' });
+                    if (!monthlyData[month]) monthlyData[month] = { income: 0, expense: 0 };
+                    monthlyData[month][t.type] += t.amount;
+                });
+                
+                const maxVal = Math.max(1, ...Object.values(monthlyData).map(d => Math.max(d.income, d.expense)));
+
+                document.querySelectorAll('.bar-group').forEach(group => {
+                    const month = group.dataset.month;
+                    const incomeBar = group.querySelector('.bar.income');
+                    const expenseBar = group.querySelector('.bar.expense');
+                    
+                    if (monthlyData[month]) {
+                        incomeBar.style.height = `${(monthlyData[month].income / maxVal) * 100}%`;
+                        expenseBar.style.height = `${(monthlyData[month].expense / maxVal) * 100}%`;
+                    } else {
+                        incomeBar.style.height = '0%';
+                        expenseBar.style.height = '0%';
+                    }
+                });
+            }
+
+            // --- INISIALISASI HALAMAN ---
+            renderTransactions();
+            updateDashboardAndChart();
+        });
+    </script>
+</body>
 </html>
