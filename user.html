@@ -11,46 +11,102 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* CSS Lengkap dari versi sebelumnya (Tidak ada perubahan) */
         :root {
             --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
             --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #8A94A6;
             --border-color: #F1F3F6;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-primary); }
         h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', sans-serif; }
         .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background-color: var(--background-color); position: relative; padding-bottom: 110px; }
+        
+        /* HEADER DENGAN VIEW SWITCHER */
         .page-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: var(--card-background); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .page-header h1 { font-size: 22px; }
         .view-switcher { display: flex; background-color: var(--primary-light); border-radius: 12px; padding: 4px; }
         .view-btn { border: none; padding: 8px; border-radius: 10px; background-color: transparent; font-size: 22px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease; }
         .view-btn.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(0, 106, 255, 0.3); }
+
+        /* SUMMARY CARD */
         .summary-card { margin: 20px; padding: 20px; background: linear-gradient(135deg, #006AFF, #004CB3); color: white; border-radius: 24px; display: flex; justify-content: space-around; text-align: center; box-shadow: 0 12px 32px rgba(0, 106, 255, 0.3); }
         .summary-item h2 { font-size: 28px; font-weight: 700; }
         .summary-item p { font-size: 14px; opacity: 0.8; }
+        
+        /* SEARCH BAR */
+        .search-container { padding: 0 20px 20px 20px; }
+        .search-bar { display: flex; align-items: center; gap: 12px; background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 16px; padding: 12px 16px; }
+        .search-bar i { font-size: 22px; color: var(--text-secondary); }
+        .search-bar input { border: none; outline: none; background: none; font-family: 'Poppins', sans-serif; font-size: 16px; width: 100%; }
+        
         .view-pane { display: none; }
         .view-pane.active { display: block; animation: fadeIn 0.4s ease; }
+        
+        /* TAMPILAN PER KELUARGA (dengan tombol titik tiga) */
         .family-card { background-color: var(--card-background); border-radius: 20px; margin: 0 20px 20px 20px; box-shadow: 0 8px 40px rgba(138, 148, 166, 0.1); }
-        .family-header { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid var(--border-color); }
+        .family-header { display: flex; align-items: center; gap: 12px; padding: 16px; }
         .family-header .icon-wrapper { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background-color: var(--primary-light); color: var(--primary-color); }
+        .family-header .info { flex-grow: 1; }
         .family-header .info h3 { font-size: 18px; }
         .family-header .info p { font-size: 14px; color: var(--text-secondary); }
-        .member-list { list-style: none; padding: 8px; }
+        .more-btn { text-decoration: none; color: var(--text-secondary); font-size: 24px; padding: 8px; border-radius: 50%; }
+        .more-btn:hover { background-color: var(--primary-light); }
+        .member-list-preview { list-style: none; padding: 0 8px 8px 8px; }
         .member-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; }
         .member-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
         .member-info h4 { font-size: 16px; font-weight: 500; }
         .member-info p { font-size: 12px; color: var(--text-secondary); }
         .is-head { margin-left: auto; font-size: 12px; font-weight: 600; background-color: var(--primary-light); color: var(--primary-color); padding: 4px 8px; border-radius: 8px; }
+        .more-members-indicator { padding: 0 12px 12px 12px; font-size: 14px; color: var(--text-secondary); font-style: italic; }
+
+        /* TAMPILAN SEMUA WARGA */
         .individual-list { padding: 0 20px; }
-        .individual-item { display: flex; align-items: center; gap: 16px; background-color: var(--card-background); padding: 12px; border-radius: 16px; margin-bottom: 12px; }
+        .individual-item { display: flex; align-items: center; gap: 16px; background-color: var(--card-background); padding: 12px; border-radius: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
+        
+        /* MODAL POP-UP ANGGOTA KELUARGA */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; }
+        .modal-overlay:target { opacity: 1; visibility: visible; }
+        .modal-content { background-color: var(--background-color); border-radius: 24px; width: 90%; max-width: 420px; max-height: 80vh; overflow-y: auto; animation: scaleUp 0.3s ease; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; background-color: var(--background-color); }
+        .modal-header h2 { font-size: 18px; }
+        .close-button { text-decoration: none; color: var(--text-secondary); font-size: 28px; }
+        .full-member-list { padding: 8px; }
+        
+        /* BOTTOM NAVIGATION */
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 440px; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 8px; border-radius: 28px; box-shadow: 0 12px 48px rgba(138, 148, 166, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); }
         .nav-item.active { color: var(--primary-color); }
     </style>
 </head>
 <body>
+    <div id="keluarga-yanto-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Keluarga Bpk. Yanto</h2>
+                <a href="" class="close-button"><i class="ph-bold ph-x-circle"></i></a>
+            </div>
+            <ul class="full-member-list">
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Yanto" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Yanto</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Sumiyati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Sumiyati</h4><p>Istri</p></div></li>
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Bambang" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Bambang</h4><p>Anak</p></div></li>
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Susi" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Susi</h4><p>Anak</p></div></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="keluarga-budi-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Keluarga Bpk. Budi</h2><a href="" class="close-button"><i class="ph-bold ph-x-circle"></i></a></div>
+            <ul class="full-member-list">
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=BudiSantoso" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Budi Santoso</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
+                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Wati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Wati</h4><p>Istri</p></div></li>
+            </ul>
+        </div>
+    </div>
+
     <div class="app-container">
         <header class="page-header">
             <h1>Daftar Warga</h1>
@@ -66,25 +122,39 @@
                 <div class="summary-item"><h2>25</h2><p>Total Keluarga</p></div>
             </section>
 
+            <div class="search-container">
+                <div class="search-bar"><i class="ph-bold ph-magnifying-glass"></i><input type="text" id="searchInput" placeholder="Cari nama warga..."></div>
+            </div>
+
             <div id="view-keluarga" class="view-pane active">
                 <div class="family-card">
-                    <div class="family-header"><div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div><div class="info"><h3>Keluarga Bapak Yanto</h3><p>Blok C No. 10</p></div></div>
-                    <ul class="member-list">
+                    <div class="family-header">
+                        <div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div>
+                        <div class="info"><h3>Keluarga Bapak Yanto</h3><p>Blok C No. 10</p></div>
+                        <a href="#keluarga-yanto-modal" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a>
+                    </div>
+                    <ul class="member-list-preview">
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=Yanto" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Yanto</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=Sumiyati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Sumiyati</h4><p>Istri</p></div></li>
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=Bambang" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Bambang</h4><p>Anak</p></div></li>
                     </ul>
+                    <div class="more-members-indicator">+ 1 anggota lainnya...</div>
                 </div>
                 <div class="family-card">
-                    <div class="family-header"><div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div><div class="info"><h3>Keluarga Bapak Budi</h3><p>Blok C No. 12</p></div></div>
-                    <ul class="member-list">
+                    <div class="family-header">
+                        <div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div>
+                        <div class="info"><h3>Keluarga Bapak Budi</h3><p>Blok C No. 12</p></div>
+                        <a href="#keluarga-budi-modal" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a>
+                    </div>
+                    <ul class="member-list-preview">
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=BudiSantoso" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Budi Santoso</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=Wati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Wati</h4><p>Istri</p></div></li>
                     </ul>
                 </div>
                  <div class="family-card">
-                    <div class="family-header"><div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div><div class="info"><h3>Keluarga Ibu Siti</h3><p>Blok D No. 1</p></div></div>
-                    <ul class="member-list">
+                    <div class="family-header"><div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div><div class="info"><h3>Keluarga Ibu Siti</h3><p>Blok D No. 1</p></div>
+                    <a href="#" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a></div>
+                    <ul class="member-list-preview">
                         <li class="member-item"><img src="https://i.pravatar.cc/150?u=SitiNurjanah" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Siti Nurjanah</h4><p>Ibu</p></div><span class="is-head">Kepala Keluarga</span></li>
                     </ul>
                 </div>
@@ -95,91 +165,7 @@
                     <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Abdul" class="member-avatar"><div class="member-info"><h4>Abdul Gafur</h4><p>Keluarga Bpk. Gafur (Blok A No. 1)</p></div></div>
                     <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Adi" class="member-avatar"><div class="member-info"><h4>Adi Nugroho</h4><p>Keluarga Bpk. Nugroho (Blok B No. 5)</p></div></div>
                     <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Agus" class="member-avatar"><div class="member-info"><h4>Agus Purnomo</h4><p>Keluarga Bpk. Agus (Blok E No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Ahmad" class="member-avatar"><div class="member-info"><h4>Ahmad Zaelani</h4><p>Keluarga Bpk. Zaelani (Blok A No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Aisha" class="member-avatar"><div class="member-info"><h4>Aisha Putri</h4><p>Keluarga Bpk. Zaelani (Blok A No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Aminah" class="member-avatar"><div class="member-info"><h4>Aminah</h4><p>Keluarga Bpk. Gafur (Blok A No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Andi" class="member-avatar"><div class="member-info"><h4>Andi Setiawan</h4><p>Keluarga Bpk. Setiawan (Blok F No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Anita" class="member-avatar"><div class="member-info"><h4>Anita Lestari</h4><p>Keluarga Bpk. Setiawan (Blok F No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Anwar" class="member-avatar"><div class="member-info"><h4>Anwar Sanusi</h4><p>Keluarga Bpk. Sanusi (Blok D No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Bambang" class="member-avatar"><div class="member-info"><h4>Bambang</h4><p>Keluarga Bpk. Yanto (Blok C No. 10)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=BudiSantoso" class="member-avatar"><div class="member-info"><h4>Budi Santoso</h4><p>Keluarga Bpk. Budi (Blok C No. 12)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Cahyo" class="member-avatar"><div class="member-info"><h4>Cahyo Utomo</h4><p>Keluarga Bpk. Utomo (Blok B No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Cinta" class="member-avatar"><div class="member-info"><h4>Cinta Kirana</h4><p>Keluarga Bpk. Utomo (Blok B No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Citra" class="member-avatar"><div class="member-info"><h4>Citra Dewi</h4><p>Keluarga Bpk. Sanusi (Blok D No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Dedi" class="member-avatar"><div class="member-info"><h4>Dedi Irawan</h4><p>Keluarga Bpk. Dedi (Blok G No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Dewi" class="member-avatar"><div class="member-info"><h4>Dewi Sartika</h4><p>Keluarga Bpk. Dedi (Blok G No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Dian" class="member-avatar"><div class="member-info"><h4>Dian Anggraini</h4><p>Keluarga Bpk. Hermawan (Blok F No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Dimas" class="member-avatar"><div class="member-info"><h4>Dimas Saputra</h4><p>Keluarga Bpk. Hermawan (Blok F No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Eka" class="member-avatar"><div class="member-info"><h4>Eka Wahyuni</h4><p>Keluarga Bpk. Eko (Blok A No. 9)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Eko" class="member-avatar"><div class="member-info"><h4>Eko Prasetyo</h4><p>Keluarga Bpk. Eko (Blok A No. 9)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Endang" class="member-avatar"><div class="member-info"><h4>Endang Sulastri</h4><p>Keluarga Bpk. Endang (Blok H No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Fajar" class="member-avatar"><div class="member-info"><h4>Fajar Sidik</h4><p>Keluarga Bpk. Fajar (Blok C No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Farah" class="member-avatar"><div class="member-info"><h4>Farah Diba</h4><p>Keluarga Bpk. Fajar (Blok C No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Fitri" class="member-avatar"><div class="member-info"><h4>Fitri Handayani</h4><p>Keluarga Bpk. Endang (Blok H No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Galih" class="member-avatar"><div class="member-info"><h4>Galih Prakoso</h4><p>Keluarga Bpk. Prakoso (Blok E No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Gita" class="member-avatar"><div class="member-info"><h4>Gita Permata</h4><p>Keluarga Bpk. Prakoso (Blok E No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Hadi" class="member-avatar"><div class="member-info"><h4>Hadi Wijoyo</h4><p>Keluarga Bpk. Wijoyo (Blok D No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Hasan" class="member-avatar"><div class="member-info"><h4>Hasan Basri</h4><p>Keluarga Bpk. Hasan (Blok G No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Hendra" class="member-avatar"><div class="member-info"><h4>Hendra Gunawan</h4><p>Keluarga Bpk. Gunawan (Blok B No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Heru" class="member-avatar"><div class="member-info"><h4>Heru Santoso</h4><p>Keluarga Bpk. Heru (Blok F No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Ika" class="member-avatar"><div class="member-info"><h4>Ika Putri</h4><p>Keluarga Bpk. Heru (Blok F No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Imam" class="member-avatar"><div class="member-info"><h4>Imam Subagyo</h4><p>Keluarga Bpk. Subagyo (Blok A No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Indra" class="member-avatar"><div class="member-info"><h4>Indra Mahendra</h4><p>Keluarga Bpk. Mahendra (Blok H No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Intan" class="member-avatar"><div class="member-info"><h4>Intan Sari</h4><p>Keluarga Bpk. Mahendra (Blok H No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Irfan" class="member-avatar"><div class="member-info"><h4>Irfan Hakim</h4><p>Keluarga Bpk. Hakim (Blok C No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Irma" class="member-avatar"><div class="member-info"><h4>Irma Suryani</h4><p>Keluarga Bpk. Hakim (Blok C No. 3)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Iwan" class="member-avatar"><div class="member-info"><h4>Iwan Fals</h4><p>Keluarga Bpk. Iwan (Blok E No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Jajang" class="member-avatar"><div class="member-info"><h4>Jajang Nurjaman</h4><p>Keluarga Bpk. Jajang (Blok G No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Jamal" class="member-avatar"><div class="member-info"><h4>Jamal Mirdad</h4><p>Keluarga Bpk. Jamal (Blok D No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Joko" class="member-avatar"><div class="member-info"><h4>Joko Susilo</h4><p>Keluarga Bpk. Joko (Blok B No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Kartini" class="member-avatar"><div class="member-info"><h4>Kartini</h4><p>Keluarga Bpk. Joko (Blok B No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Lia" class="member-avatar"><div class="member-info"><h4>Lia Amelia</h4><p>Keluarga Bpk. Jamal (Blok D No. 4)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Lukman" class="member-avatar"><div class="member-info"><h4>Lukman Sardi</h4><p>Keluarga Bpk. Lukman (Blok F No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Maria" class="member-avatar"><div class="member-info"><h4>Maria Ulfa</h4><p>Keluarga Bpk. Lukman (Blok F No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Maya" class="member-avatar"><div class="member-info"><h4>Maya Estianty</h4><p>Keluarga Bpk. Subagyo (Blok A No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Mega" class="member-avatar"><div class="member-info"><h4>Mega Wati</h4><p>Keluarga Bpk. Iwan (Blok E No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Muhammad" class="member-avatar"><div class="member-info"><h4>Muhammad Ali</h4><p>Keluarga Bpk. Ali (Blok H No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Nana" class="member-avatar"><div class="member-info"><h4>Nana Mirdad</h4><p>Keluarga Bpk. Jajang (Blok G No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Nina" class="member-avatar"><div class="member-info"><h4>Nina Tamam</h4><p>Keluarga Bpk. Ali (Blok H No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Novi" class="member-avatar"><div class="member-info"><h4>Novi Indah</h4><p>Keluarga Bpk. Gunawan (Blok B No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Nur" class="member-avatar"><div class="member-info"><h4>Nur Aini</h4><p>Keluarga Bpk. Hasan (Blok G No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Putra" class="member-avatar"><div class="member-info"><h4>Putra Bangsa</h4><p>Keluarga Bpk. Wijoyo (Blok D No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Putri" class="member-avatar"><div class="member-info"><h4>Putri Ayu</h4><p>Keluarga Bpk. Wijoyo (Blok D No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rahmat" class="member-avatar"><div class="member-info"><h4>Rahmat Hidayat</h4><p>Keluarga Bpk. Rahmat (Blok C No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rani" class="member-avatar"><div class="member-info"><h4>Rani Puspita</h4><p>Keluarga Bpk. Rahmat (Blok C No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Ratna" class="member-avatar"><div class="member-info"><h4>Ratna Sari</h4><p>Keluarga Bpk. Agus (Blok E No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rendi" class="member-avatar"><div class="member-info"><h4>Rendi Andika</h4><p>Keluarga Bpk. Rendi (Blok A No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Ria" class="member-avatar"><div class="member-info"><h4>Ria Irawan</h4><p>Keluarga Bpk. Rendi (Blok A No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rian" class="member-avatar"><div class="member-info"><h4>Rian D'Masiv</h4><p>Keluarga Bpk. Rian (Blok H No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rina" class="member-avatar"><div class="member-info"><h4>Rina Nose</h4><p>Keluarga Bpk. Rian (Blok H No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rini" class="member-avatar"><div class="member-info"><h4>Rini Wulandari</h4><p>Keluarga Bpk. Nugroho (Blok B No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rio" class="member-avatar"><div class="member-info"><h4>Rio Dewanto</h4><p>Keluarga Bpk. Rio (Blok G No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Riska" class="member-avatar"><div class="member-info"><h4>Riska Amelia</h4><p>Keluarga Bpk. Rio (Blok G No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Rizky" class="member-avatar"><div class="member-info"><h4>Rizky Febian</h4><p>Keluarga Bpk. Sule (Blok E No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Sari" class="member-avatar"><div class="member-info"><h4>Sari Yanti</h4><p>Keluarga Bpk. Sule (Blok E No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=SitiNurjanah" class="member-avatar"><div class="member-info"><h4>Siti Nurjanah</h4><p>Keluarga Ibu Siti (Blok D No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Slamet" class="member-avatar"><div class="member-info"><h4>Slamet Raharjo</h4><p>Keluarga Bpk. Slamet (Blok F No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Sri" class="member-avatar"><div class="member-info"><h4>Sri Mulyani</h4><p>Keluarga Bpk. Slamet (Blok F No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Sugeng" class="member-avatar"><div class="member-info"><h4>Sugeng</h4><p>Keluarga Bpk. Sugeng (Blok B No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Sule" class="member-avatar"><div class="member-info"><h4>Sule</h4><p>Keluarga Bpk. Sule (Blok E No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Sumiyati" class="member-avatar"><div class="member-info"><h4>Sumiyati</h4><p>Keluarga Bpk. Yanto (Blok C No. 10)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Surya" class="member-avatar"><div class="member-info"><h4>Surya Saputra</h4><p>Keluarga Bpk. Surya (Blok H No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Susan" class="member-avatar"><div class="member-info"><h4>Susan Bachtiar</h4><p>Keluarga Bpk. Surya (Blok H No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Taufik" class="member-avatar"><div class="member-info"><h4>Taufik Hidayat</h4><p>Keluarga Bpk. Taufik (Blok G No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Tia" class="member-avatar"><div class="member-info"><h4>Tia Ivanka</h4><p>Keluarga Bpk. Taufik (Blok G No. 2)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Tika" class="member-avatar"><div class="member-info"><h4>Tika Panggabean</h4><p>Keluarga Bpk. Sugeng (Blok B No. 8)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Toni" class="member-avatar"><div class="member-info"><h4>Toni Q Rastafara</h4><p>Keluarga Bpk. Toni (Blok C No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Tri" class="member-avatar"><div class="member-info"><h4>Tri Utami</h4><p>Keluarga Bpk. Toni (Blok C No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Ujang" class="member-avatar"><div class="member-info"><h4>Ujang van Houten</h4><p>Keluarga Bpk. Ujang (Blok D No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Uut" class="member-avatar"><div class="member-info"><h4>Uut Permatasari</h4><p>Keluarga Bpk. Ujang (Blok D No. 6)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Vina" class="member-avatar"><div class="member-info"><h4>Vina Panduwinata</h4><p>Keluarga Bpk. Pandu (Blok A No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Wati" class="member-avatar"><div class="member-info"><h4>Wati</h4><p>Keluarga Bpk. Budi (Blok C No. 12)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Widodo" class="member-avatar"><div class="member-info"><h4>Widodo C. Putro</h4><p>Keluarga Bpk. Widodo (Blok F No. 9)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Yanti" class="member-avatar"><div class="member-info"><h4>Yanti</h4><p>Keluarga Bpk. Widodo (Blok F No. 9)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Yanto" class="member-avatar"><div class="member-info"><h4>Yanto</h4><p>Keluarga Bpk. Yanto (Blok C No. 10)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Yuni" class="member-avatar"><div class="member-info"><h4>Yuni Shara</h4><p>Keluarga Bpk. Pandu (Blok A No. 7)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Zaskia" class="member-avatar"><div class="member-info"><h4>Zaskia Sungkar</h4><p>Keluarga Bpk. Mark (Blok G No. 9)</p></div></div>
-                </div>
+                     </div>
             </div>
         </main>
         
@@ -194,11 +180,21 @@
     <script>
         const switcherButtons = document.querySelectorAll('.view-btn');
         const viewPanes = document.querySelectorAll('.view-pane');
+        const searchContainer = document.querySelector('.search-container');
+
         switcherButtons.forEach(button => {
             button.addEventListener('click', () => {
                 switcherButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
+                
                 const targetViewId = button.getAttribute('data-view');
+                
+                if (targetViewId === 'view-individu') {
+                    searchContainer.style.display = 'block';
+                } else {
+                    searchContainer.style.display = 'none';
+                }
+                
                 viewPanes.forEach(pane => {
                     if (pane.id === targetViewId) {
                         pane.classList.add('active');
@@ -208,6 +204,32 @@
                 });
             });
         });
+
+        const searchInput = document.getElementById('searchInput');
+        const userList = document.querySelector('#view-individu .individual-list');
+        // Pastikan userList ditemukan sebelum mengakses propertinya
+        if (userList) {
+            const userItems = userList.querySelectorAll('.individual-item');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+
+                userItems.forEach(item => {
+                    const userName = item.querySelector('h4').textContent.toLowerCase();
+                    
+                    if (userName.includes(query)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Sembunyikan search bar saat pertama kali load
+        if (searchContainer) {
+            searchContainer.style.display = 'none';
+        }
     </script>
 </body>
 </html>
