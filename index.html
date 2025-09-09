@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SiWarga (V7)</title>
+    <title>Dashboard - SiWarga (V7.3)</title>
+    
+    <link rel="icon" type="image/png" href="path/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
+            --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #FFFFFF;
             --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #8A94A6;
             --border-color: #F1F3F6; --accent-green: #27AE60; --accent-orange: #F97316;
         }
@@ -22,40 +24,69 @@
         .section-title { font-size: 20px; font-weight: 600; padding: 0 20px; margin: 24px 0 16px 0; display: flex; justify-content: space-between; align-items: center; animation: slideUpFadeIn 0.5s ease-out forwards; }
         .section-title a { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: var(--primary-color); text-decoration: none; }
         
-        /* HEADER */
+        /* HEADER (Desain dari V7.2) */
         .main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; animation: slideUpFadeIn 0.5s ease-out forwards; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .app-logo { width: 40px; height: 40px; }
-        .header-left h1 { font-size: 22px; }
-        .header-right { display: flex; align-items: center; gap: 16px; font-size: 26px; color: var(--text-secondary); }
-        
-        /* KARTU AKSES CEPAT */
-        .quick-access-grid { padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .access-card { text-decoration: none; color: var(--text-primary); background-color: var(--card-background); border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px rgba(138, 148, 166, 0.1); animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); transition: transform 0.2s ease; }
-        .access-card:hover { transform: translateY(-5px); }
-        .access-card .icon-wrapper { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; font-size: 24px; margin-bottom: 12px; color: white; }
-        .access-card h3 { font-size: 16px; }
-        .access-card.ac-iuran .icon-wrapper { background-color: #006AFF; }
-        .access-card.ac-lapor .icon-wrapper { background-color: #FF8A00; }
-        .access-card.ac-surat .icon-wrapper { background-color: #27AE60; }
-        .access-card.ac-jelajah .icon-wrapper { background-color: #8E44AD; }
+        .header-greeting { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+        .greeting-text h2 { font-size: 18px; font-weight: 600; }
+        .greeting-text p { font-size: 14px; color: var(--text-secondary); }
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .action-icon { display: grid; place-items: center; width: 44px; height: 44px; background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 50%; font-size: 22px; color: var(--text-primary); text-decoration: none; transition: all 0.2s ease; }
+        .action-icon:hover { background-color: var(--primary-light); color: var(--primary-color); transform: scale(1.1); }
 
-        /* PENGUMUMAN PENTING */
+        /* AKSES CEPAT (Desain dari V7.1) */
+        .quick-access-icons { display: flex; justify-content: space-around; padding: 10px 20px; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: 0.1s; }
+        .access-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-primary); width: 80px; }
+        .access-item .icon-circle { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; margin-bottom: 8px; color: white; box-shadow: 0 8px 24px rgba(138, 148, 166, 0.15); transition: transform 0.2s ease; }
+        .access-item:hover .icon-circle { transform: translateY(-5px); }
+        .access-item span { font-size: 14px; font-weight: 500; text-align: center; }
+        .access-item.ac-iuran .icon-circle { background-color: #006AFF; }
+        .access-item.ac-lapor .icon-circle { background-color: #FF8A00; }
+        .access-item.ac-surat .icon-circle { background-color: #27AE60; }
+        .access-item.ac-jelajah .icon-circle { background-color: #8E44AD; }
+
+        /* PENGUMUMAN PENTING & FEED */
         .important-announcements { display: flex; gap: 16px; overflow-x: auto; padding: 0 20px 20px 20px; -ms-overflow-style: none; scrollbar-width: none; }
         .important-announcements::-webkit-scrollbar { display: none; }
         .important-card { flex-shrink: 0; width: 280px; text-decoration: none; color: white; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 150px; background: linear-gradient(135deg, #1A2980, #26D0CE); animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); }
         .important-card .tag { background-color: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; align-self: flex-start; }
         .important-card h3 { font-size: 18px; margin-top: 8px; }
-
-        /* FEED UTAMA */
         .feed { padding: 0 20px; }
         .feed-item { display: flex; gap: 16px; align-items: center; background-color: var(--card-background); padding: 16px; border-radius: 20px; margin-bottom: 16px; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: var(--delay); }
         .feed-item .icon-wrapper { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; font-size: 22px; background-color: var(--primary-light); color: var(--primary-color); }
         .feed-item .info h4 { font-size: 16px; font-weight: 600; }
         .feed-item .info p { font-size: 14px; color: var(--text-secondary); }
 
-        /* BOTTOM NAVIGATION BARU */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 440px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 8px; border-radius: 28px; box-shadow: 0 10px 40px rgba(138, 148, 166, 0.2); border: 1px solid rgba(255, 255, 255, 0.8); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        /* [PERBAIKAN] BOTTOM NAVIGATION GLASSMORPHISM */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 440px;
+            
+            /* Background lebih transparan */
+            background: rgba(255, 255, 255, 0.65);
+            
+            /* Efek blur lebih kuat */
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            
+            padding: 8px;
+            border-radius: 28px;
+            
+            /* Shadow lebih halus */
+            box-shadow: 0 12px 48px rgba(138, 148, 166, 0.18);
+            
+            /* Tepian kaca lebih halus */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
         .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); }
         .nav-item.active { color: var(--primary-color); }
     </style>
@@ -63,47 +94,52 @@
 <body>
     <div class="app-container">
         <header class="main-header">
-            <div class="header-left">
-                <img src="path/to/your/logo-icon-only.png" alt="Logo SiWarga" class="app-logo">
-                <h1>Beranda</h1>
+            <div class="header-greeting">
+                <img src="https://i.pravatar.cc/150?u=budi" alt="Avatar Pengguna" class="user-avatar">
+                <div class="greeting-text">
+                    <h2>Halo, Budi!</h2>
+                    <p>Selamat datang kembali</p>
+                </div>
             </div>
-            <div class="header-right">
-                <a href="#" style="color: inherit;"><i class="ph-bold ph-magnifying-glass"></i></a>
-                <a href="#" style="color: inherit;"><i class="ph-bold ph-bell"></i></a>
+            <div class="header-actions">
+                <a href="#" class="action-icon"><i class="ph-bold ph-magnifying-glass"></i></a>
+                <a href="#" class="action-icon"><i class="ph-bold ph-bell"></i></a>
             </div>
         </header>
+
         <main>
             <section class="quick-access">
                 <h2 class="section-title">Akses Cepat</h2>
-                <div class="quick-access-grid">
-                    <a href="iuran.html" class="access-card ac-iuran" style="--delay: 0.1s;"><div class="icon-wrapper"><i class="ph-bold ph-wallet"></i></div><h3>Bayar Iuran</h3></a>
-                    <a href="lapor.html" class="access-card ac-lapor" style="--delay: 0.2s;"><div class="icon-wrapper"><i class="ph-bold ph-broadcast"></i></div><h3>Buat Laporan</h3></a>
-                    <a href="#" class="access-card ac-surat" style="--delay: 0.3s;"><div class="icon-wrapper"><i class="ph-bold ph-files"></i></div><h3>Surat RT</h3></a>
-                    <a href="jelajah.html" class="access-card ac-jelajah" style="--delay: 0.4s;"><div class="icon-wrapper"><i class="ph-bold ph-storefront"></i></div><h3>Jelajah Usaha</h3></a>
+                <div class="quick-access-icons">
+                    <a href="iuran.html" class="access-item ac-iuran"><div class="icon-circle"><i class="ph-bold ph-wallet"></i></div><span>Iuran</span></a>
+                    <a href="lapor.html" class="access-item ac-lapor"><div class="icon-circle"><i class="ph-bold ph-broadcast"></i></div><span>Lapor</span></a>
+                    <a href="#" class="access-item ac-surat"><div class="icon-circle"><i class="ph-bold ph-files"></i></div><span>Surat RT</span></a>
+                    <a href="jelajah.html" class="access-item ac-jelajah"><div class="icon-circle"><i class="ph-bold ph-storefront"></i></div><span>Jelajah</span></a>
                 </div>
             </section>
-
             <section>
                 <h2 class="section-title">Pengumuman Penting</h2>
                 <div class="important-announcements">
-                    <a href="#" class="important-card" style="--delay: 0.5s;"><span class="tag">PENTING</span><h3>Pembaruan Jadwal Portal Malam</h3></a>
-                    <a href="#" class="important-card" style="background: linear-gradient(135deg, #8E44AD, #C0392B);" style="--delay: 0.6s;"><span class="tag">ACARA</span><h3>Panggung Gembira & Bazar Malam Minggu</h3></a>
+                    <a href="#" class="important-card" style="--delay: 0.2s;"><span class="tag">PENTING</span><h3>Pembaruan Jadwal Portal Malam</h3></a>
+                    <a href="#" class="important-card" style="background: linear-gradient(135deg, #8E44AD, #C0392B); --delay: 0.3s;"><span class="tag">ACARA</span><h3>Panggung Gembira & Bazar Malam Minggu</h3></a>
                 </div>
             </section>
-
             <section>
                 <h2 class="section-title">Aktivitas Terkini <a href="#">Lihat Semua</a></h2>
                 <div class="feed">
-                    <div class="feed-item" style="--delay: 0.7s;"><div class="icon-wrapper"><i class="ph-bold ph-hand-coins"></i></div><div class="info"><h4>Ibu Siti (Blok C) telah membayar iuran.</h4><p>5 menit yang lalu</p></div></div>
-                    <div class="feed-item" style="--delay: 0.8s;"><div class="icon-wrapper" style="background-color: #FFF2E6; color: #FF8A00;"><i class="ph-bold ph-wrench"></i></div><div class="info"><h4>Laporan baru: Lampu jalan mati.</h4><p>1 jam yang lalu</p></div></div>
-                    <div class="feed-item" style="--delay: 0.9s;"><div class="icon-wrapper" style="background-color: #EAF7EE; color: #27AE60;"><i class="ph-bold ph-user-plus"></i></div><div class="info"><h4>Selamat datang keluarga Bpk. Agus!</h4><p>3 jam yang lalu</p></div></div>
+                    <div class="feed-item" style="--delay: 0.4s;"><div class="icon-wrapper"><i class="ph-bold ph-hand-coins"></i></div><div class="info"><h4>Ibu Siti (Blok C) telah membayar iuran.</h4><p>5 menit yang lalu</p></div></div>
+                    <div class="feed-item" style="--delay: 0.5s;"><div class="icon-wrapper" style="background-color: #FFF2E6; color: #FF8A00;"><i class="ph-bold ph-wrench"></i></div><div class="info"><h4>Laporan baru: Lampu jalan mati.</h4><p>1 jam yang lalu</p></div></div>
+                    <div class="feed-item" style="--delay: 0.6s;"><div class="icon-wrapper" style="background-color: #EAF7EE; color: #27AE60;"><i class="ph-bold ph-user-plus"></i></div><div class="info"><h4>Selamat datang keluarga Bpk. Agus!</h4><p>3 jam yang lalu</p></div></div>
                 </div>
             </section>
         </main>
         
         <nav class="bottom-nav">
              <a href="index.html" class="nav-item active"><i class="ph-fill ph-house"></i></a>
-             <a href="#" class="nav-item"><i class="ph-bold ph-users"></i></a> <a href="#" class="nav-item"><i class="ph-bold ph-chat-dots"></i></a> <a href="profil.html" class="nav-item"><i class="ph-bold ph-user-circle"></i></a> </nav>
+             <a href="#" class="nav-item"><i class="ph-bold ph-users"></i></a>
+             <a href="#" class="nav-item"><i class="ph-bold ph-chat-dots"></i></a>
+             <a href="profil.html" class="nav-item"><i class="ph-bold ph-user-circle"></i></a>
+        </nav>
     </div>
 </body>
 </html>
