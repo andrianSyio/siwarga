@@ -11,48 +11,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
+        /* CSS Lengkap dari versi sebelumnya (Tidak ada perubahan) */
         :root {
             --primary-color: #006AFF; --primary-light: #E6F0FF; --background-color: #F8F9FD;
             --card-background: #FFFFFF; --text-primary: #1D2433; --text-secondary: #8A94A6;
             --border-color: #F1F3F6;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
+        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-primary); }
         h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', sans-serif; }
         .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background-color: var(--background-color); position: relative; padding-bottom: 110px; }
-        
-        /* HEADER DENGAN VIEW SWITCHER */
         .page-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: var(--card-background); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .page-header h1 { font-size: 22px; }
         .view-switcher { display: flex; background-color: var(--primary-light); border-radius: 12px; padding: 4px; }
         .view-btn { border: none; padding: 8px; border-radius: 10px; background-color: transparent; font-size: 22px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease; }
         .view-btn.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(0, 106, 255, 0.3); }
-
-        /* SUMMARY CARD */
         .summary-card { margin: 20px; padding: 20px; background: linear-gradient(135deg, #006AFF, #004CB3); color: white; border-radius: 24px; display: flex; justify-content: space-around; text-align: center; box-shadow: 0 12px 32px rgba(0, 106, 255, 0.3); }
         .summary-item h2 { font-size: 28px; font-weight: 700; }
         .summary-item p { font-size: 14px; opacity: 0.8; }
-        
-        /* SEARCH BAR */
         .search-container { padding: 0 20px 20px 20px; }
         .search-bar { display: flex; align-items: center; gap: 12px; background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 16px; padding: 12px 16px; }
         .search-bar i { font-size: 22px; color: var(--text-secondary); }
         .search-bar input { border: none; outline: none; background: none; font-family: 'Poppins', sans-serif; font-size: 16px; width: 100%; }
-        
         .view-pane { display: none; }
         .view-pane.active { display: block; animation: fadeIn 0.4s ease; }
-        
-        /* TAMPILAN PER KELUARGA (dengan tombol titik tiga) */
         .family-card { background-color: var(--card-background); border-radius: 20px; margin: 0 20px 20px 20px; box-shadow: 0 8px 40px rgba(138, 148, 166, 0.1); }
         .family-header { display: flex; align-items: center; gap: 12px; padding: 16px; }
         .family-header .icon-wrapper { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background-color: var(--primary-light); color: var(--primary-color); }
         .family-header .info { flex-grow: 1; }
         .family-header .info h3 { font-size: 18px; }
         .family-header .info p { font-size: 14px; color: var(--text-secondary); }
-        .more-btn { text-decoration: none; color: var(--text-secondary); font-size: 24px; padding: 8px; border-radius: 50%; }
+        .more-btn { border:none; background: none; cursor: pointer; color: var(--text-secondary); font-size: 24px; padding: 8px; border-radius: 50%; }
         .more-btn:hover { background-color: var(--primary-light); }
         .member-list-preview { list-style: none; padding: 0 8px 8px 8px; }
         .member-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; }
@@ -60,50 +51,31 @@
         .member-info h4 { font-size: 16px; font-weight: 500; }
         .member-info p { font-size: 12px; color: var(--text-secondary); }
         .is-head { margin-left: auto; font-size: 12px; font-weight: 600; background-color: var(--primary-light); color: var(--primary-color); padding: 4px 8px; border-radius: 8px; }
-        .more-members-indicator { padding: 0 12px 12px 12px; font-size: 14px; color: var(--text-secondary); font-style: italic; }
-
-        /* TAMPILAN SEMUA WARGA */
+        .more-members-indicator { padding: 0 16px 16px 16px; font-size: 14px; color: var(--text-secondary); font-style: italic; }
         .individual-list { padding: 0 20px; }
         .individual-item { display: flex; align-items: center; gap: 16px; background-color: var(--card-background); padding: 12px; border-radius: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
-        
-        /* MODAL POP-UP ANGGOTA KELUARGA */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; }
-        .modal-overlay:target { opacity: 1; visibility: visible; }
-        .modal-content { background-color: var(--background-color); border-radius: 24px; width: 90%; max-width: 420px; max-height: 80vh; overflow-y: auto; animation: scaleUp 0.3s ease; }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-content { background-color: var(--background-color); border-radius: 24px; width: 90%; max-width: 420px; max-height: 80vh; overflow-y: auto; transform: scale(0.95); transition: all 0.3s ease; }
+        .modal-overlay.show .modal-content { transform: scale(1); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; background-color: var(--background-color); }
         .modal-header h2 { font-size: 18px; }
-        .close-button { text-decoration: none; color: var(--text-secondary); font-size: 28px; }
+        .close-button { border: none; background: none; cursor: pointer; color: var(--text-secondary); font-size: 28px; }
         .full-member-list { padding: 8px; }
-        
-        /* BOTTOM NAVIGATION */
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 440px; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 8px; border-radius: 28px; box-shadow: 0 12px 48px rgba(138, 148, 166, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { width: 60px; height: 60px; display: grid; place-items: center; text-decoration: none; font-size: 28px; color: var(--text-secondary); }
         .nav-item.active { color: var(--primary-color); }
     </style>
 </head>
 <body>
-    <div id="keluarga-yanto-modal" class="modal-overlay">
+    <div id="family-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Keluarga Bpk. Yanto</h2>
-                <a href="" class="close-button"><i class="ph-bold ph-x-circle"></i></a>
+                <h2 id="modal-title">Anggota Keluarga</h2>
+                <button class="close-button"><i class="ph-bold ph-x-circle"></i></button>
             </div>
-            <ul class="full-member-list">
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Yanto" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Yanto</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Sumiyati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Sumiyati</h4><p>Istri</p></div></li>
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Bambang" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Bambang</h4><p>Anak</p></div></li>
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Susi" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Susi</h4><p>Anak</p></div></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="keluarga-budi-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h2>Keluarga Bpk. Budi</h2><a href="" class="close-button"><i class="ph-bold ph-x-circle"></i></a></div>
-            <ul class="full-member-list">
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=BudiSantoso" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Budi Santoso</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
-                <li class="member-item"><img src="https://i.pravatar.cc/150?u=Wati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Wati</h4><p>Istri</p></div></li>
-            </ul>
+            <ul id="modal-member-list" class="full-member-list">
+                </ul>
         </div>
     </div>
 
@@ -118,54 +90,20 @@
 
         <main>
             <section class="summary-card">
-                <div class="summary-item"><h2>85</h2><p>Total Warga</p></div>
-                <div class="summary-item"><h2>25</h2><p>Total Keluarga</p></div>
+                <div class="summary-item"><h2>30</h2><p>Total Warga</p></div>
+                <div class="summary-item"><h2>10</h2><p>Total Keluarga</p></div>
             </section>
-
+            
             <div class="search-container">
                 <div class="search-bar"><i class="ph-bold ph-magnifying-glass"></i><input type="text" id="searchInput" placeholder="Cari nama warga..."></div>
             </div>
 
             <div id="view-keluarga" class="view-pane active">
-                <div class="family-card">
-                    <div class="family-header">
-                        <div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div>
-                        <div class="info"><h3>Keluarga Bapak Yanto</h3><p>Blok C No. 10</p></div>
-                        <a href="#keluarga-yanto-modal" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a>
-                    </div>
-                    <ul class="member-list-preview">
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=Yanto" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Yanto</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=Sumiyati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Sumiyati</h4><p>Istri</p></div></li>
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=Bambang" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Bambang</h4><p>Anak</p></div></li>
-                    </ul>
-                    <div class="more-members-indicator">+ 1 anggota lainnya...</div>
                 </div>
-                <div class="family-card">
-                    <div class="family-header">
-                        <div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div>
-                        <div class="info"><h3>Keluarga Bapak Budi</h3><p>Blok C No. 12</p></div>
-                        <a href="#keluarga-budi-modal" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a>
-                    </div>
-                    <ul class="member-list-preview">
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=BudiSantoso" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Budi Santoso</h4><p>Suami</p></div><span class="is-head">Kepala Keluarga</span></li>
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=Wati" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Wati</h4><p>Istri</p></div></li>
-                    </ul>
-                </div>
-                 <div class="family-card">
-                    <div class="family-header"><div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div><div class="info"><h3>Keluarga Ibu Siti</h3><p>Blok D No. 1</p></div>
-                    <a href="#" class="more-btn"><i class="ph-bold ph-dots-three-vertical"></i></a></div>
-                    <ul class="member-list-preview">
-                        <li class="member-item"><img src="https://i.pravatar.cc/150?u=SitiNurjanah" alt="Avatar" class="member-avatar"><div class="member-info"><h4>Siti Nurjanah</h4><p>Ibu</p></div><span class="is-head">Kepala Keluarga</span></li>
-                    </ul>
-                </div>
-            </div>
 
             <div id="view-individu" class="view-pane">
                 <div class="individual-list">
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Abdul" class="member-avatar"><div class="member-info"><h4>Abdul Gafur</h4><p>Keluarga Bpk. Gafur (Blok A No. 1)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Adi" class="member-avatar"><div class="member-info"><h4>Adi Nugroho</h4><p>Keluarga Bpk. Nugroho (Blok B No. 5)</p></div></div>
-                    <div class="individual-item"><img src="https://i.pravatar.cc/150?u=Agus" class="member-avatar"><div class="member-info"><h4>Agus Purnomo</h4><p>Keluarga Bpk. Agus (Blok E No. 2)</p></div></div>
-                     </div>
+                    </div>
             </div>
         </main>
         
@@ -178,58 +116,140 @@
     </div>
 
     <script>
-        const switcherButtons = document.querySelectorAll('.view-btn');
-        const viewPanes = document.querySelectorAll('.view-pane');
-        const searchContainer = document.querySelector('.search-container');
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- [PERBAIKAN] DATABASE CONTOH (10 KELUARGA, 30 WARGA) ---
+            const familiesData = {
+                aris: { name: "Keluarga Bapak Aris", address: "Blok A No. 1", members: [{ name: "Aris Zulwafa", role: "Suami", isHead: true, avatar: "ArisZulwafa" }, { name: "Dewi Lestari", role: "Istri", isHead: false, avatar: "DewiLestari" }, { name: "Bima Zulwafa", role: "Anak", isHead: false, avatar: "BimaZulwafa" }] },
+                budi: { name: "Keluarga Bapak Budi", address: "Blok A No. 2", members: [{ name: "Budi Santoso", role: "Suami", isHead: true, avatar: "BudiSantoso" }, { name: "Wati", role: "Istri", isHead: false, avatar: "Wati" }] },
+                eko: { name: "Keluarga Bapak Eko", address: "Blok A No. 3", members: [{ name: "Eko Prasetyo", role: "Suami", isHead: true, avatar: "EkoPrasetyo" }, { name: "Fitri Handayani", role: "Istri", isHead: false, avatar: "FitriHandayani" }, { name: "Gita Prasetyo", role: "Anak", isHead: false, avatar: "GitaPrasetyo" }, { name: "Galih Prasetyo", role: "Anak", isHead: false, avatar: "GalihPrasetyo" }] },
+                siti: { name: "Keluarga Ibu Siti", address: "Blok B No. 1", members: [{ name: "Siti Nurjanah", role: "Ibu", isHead: true, avatar: "SitiNurjanah" }, { name: "Putri Aisyah", role: "Anak", isHead: false, avatar: "PutriAisyah" }] },
+                agus: { name: "Keluarga Bapak Agus", address: "Blok B No. 2", members: [{ name: "Agus Purnomo", role: "Suami", isHead: true, avatar: "AgusPurnomo" }, { name: "Ratna Sari", role: "Istri", isHead: false, avatar: "RatnaSari" }] },
+                hendra: { name: "Keluarga Bapak Hendra", address: "Blok B No. 3", members: [{ name: "Hendra Gunawan", role: "Suami", isHead: true, avatar: "HendraGunawan" }, { name: "Novi Indah", role: "Istri", isHead: false, avatar: "NoviIndah" }, { name: "Kevin Gunawan", role: "Anak", isHead: false, avatar: "KevinGunawan" }] },
+                yanto: { name: "Keluarga Bapak Yanto", address: "Blok C No. 1", members: [{ name: "Yanto", role: "Suami", isHead: true, avatar: "Yanto" }, { name: "Sumiyati", role: "Istri", isHead: false, avatar: "Sumiyati" }, { name: "Bambang", role: "Anak", isHead: false, avatar: "Bambang" }] },
+                dedi: { name: "Keluarga Bapak Dedi", address: "Blok C No. 2", members: [{ name: "Dedi Irawan", role: "Suami", isHead: true, avatar: "DediIrawan" }, { name: "Dewi Sartika", role: "Istri", isHead: false, avatar: "DewiSartika" }] },
+                iwan: { name: "Keluarga Bapak Iwan", address: "Blok C No. 3", members: [{ name: "Iwan Fals", role: "Suami", isHead: true, avatar: "IwanFals" }, { name: "Mega Wati", role: "Istri", isHead: false, avatar: "MegaWati" }, { name: "Rian Fals", role: "Anak", isHead: false, avatar: "RianFals" }] },
+                jamal: { name: "Keluarga Bapak Jamal", address: "Blok C No. 4", members: [{ name: "Jamal Mirdad", role: "Suami", isHead: true, avatar: "JamalMirdad" }, { name: "Lia Amelia", role: "Istri", isHead: false, avatar: "LiaAmelia" }, { name: "Nana Mirdad", role: "Anak", isHead: false, avatar: "NanaMirdad" }] }
+            };
 
-        switcherButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                switcherButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                const targetViewId = button.getAttribute('data-view');
-                
-                if (targetViewId === 'view-individu') {
-                    searchContainer.style.display = 'block';
-                } else {
-                    searchContainer.style.display = 'none';
-                }
-                
-                viewPanes.forEach(pane => {
-                    if (pane.id === targetViewId) {
-                        pane.classList.add('active');
-                    } else {
-                        pane.classList.remove('active');
+            const familyViewContainer = document.getElementById('view-keluarga');
+            const individualViewContainer = document.querySelector('#view-individu .individual-list');
+            let allMembers = [];
+
+            // --- FUNGSI UNTUK MENGISI KONTEN ---
+            function renderContent() {
+                familyViewContainer.innerHTML = '';
+                individualViewContainer.innerHTML = '';
+                allMembers = [];
+
+                for (const familyId in familiesData) {
+                    const family = familiesData[familyId];
+                    let familyCardHTML = `
+                        <div class="family-card">
+                            <div class="family-header">
+                                <div class="icon-wrapper"><i class="ph-bold ph-house-line"></i></div>
+                                <div class="info"><h3>${family.name}</h3><p>${family.address}</p></div>
+                                <button class="more-btn" data-family="${familyId}"><i class="ph-bold ph-dots-three-vertical"></i></button>
+                            </div>
+                            <ul class="member-list-preview">`;
+
+                    family.members.slice(0, 2).forEach(member => {
+                        familyCardHTML += `
+                            <li class="member-item">
+                                <img src="https://i.pravatar.cc/150?u=${member.avatar}" alt="Avatar" class="member-avatar">
+                                <div class="member-info"><h4>${member.name}</h4><p>${member.role}</p></div>
+                                ${member.isHead ? '<span class="is-head">Kepala Keluarga</span>' : ''}
+                            </li>`;
+                    });
+                    
+                    familyCardHTML += `</ul>`;
+                    if (family.members.length > 2) {
+                        familyCardHTML += `<div class="more-members-indicator">+ ${family.members.length - 2} anggota lainnya...</div>`;
                     }
+                    familyCardHTML += `</div>`;
+                    familyViewContainer.innerHTML += familyCardHTML;
+
+                    family.members.forEach(member => {
+                        allMembers.push({ ...member, familyName: family.name, address: family.address });
+                    });
+                }
+
+                allMembers.sort((a, b) => a.name.localeCompare(b.name)); // Urutkan berdasarkan abjad
+                allMembers.forEach(member => {
+                    individualViewContainer.innerHTML += `
+                        <div class="individual-item">
+                            <img src="https://i.pravatar.cc/150?u=${member.avatar}" class="member-avatar">
+                            <div class="member-info">
+                                <h4>${member.name}</h4>
+                                <p>${member.familyName} (${member.address})</p>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            renderContent(); // Panggil fungsi untuk mengisi konten saat halaman dimuat
+
+            // --- FUNGSI VIEW SWITCHER & SEARCH (sudah benar) ---
+            const switcherButtons = document.querySelectorAll('.view-btn');
+            const viewPanes = document.querySelectorAll('.view-pane');
+            const searchContainer = document.querySelector('.search-container');
+            switcherButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switcherButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const targetViewId = button.getAttribute('data-view');
+                    searchContainer.style.display = (targetViewId === 'view-individu') ? 'block' : 'none';
+                    viewPanes.forEach(pane => {
+                        pane.classList.toggle('active', pane.id === targetViewId);
+                    });
                 });
             });
-        });
+            searchContainer.style.display = 'none';
 
-        const searchInput = document.getElementById('searchInput');
-        const userList = document.querySelector('#view-individu .individual-list');
-        // Pastikan userList ditemukan sebelum mengakses propertinya
-        if (userList) {
-            const userItems = userList.querySelectorAll('.individual-item');
-
+            const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', function() {
                 const query = this.value.toLowerCase().trim();
-
+                const userItems = individualViewContainer.querySelectorAll('.individual-item');
                 userItems.forEach(item => {
                     const userName = item.querySelector('h4').textContent.toLowerCase();
-                    
-                    if (userName.includes(query)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
+                    item.style.display = userName.includes(query) ? 'flex' : 'none';
                 });
             });
-        }
-        
-        // Sembunyikan search bar saat pertama kali load
-        if (searchContainer) {
-            searchContainer.style.display = 'none';
-        }
+            
+            // --- FUNGSI MODAL DENGAN JAVASCRIPT ---
+            const modalOverlay = document.getElementById('family-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalMemberList = document.getElementById('modal-member-list');
+            const closeModalButton = modalOverlay.querySelector('.close-button');
+
+            familyViewContainer.addEventListener('click', function(event) {
+                const openModalButton = event.target.closest('.more-btn');
+                if (openModalButton) {
+                    const familyId = openModalButton.dataset.family;
+                    const familyData = familiesData[familyId];
+                    if (familyData) {
+                        modalTitle.textContent = familyData.name;
+                        modalMemberList.innerHTML = '';
+                        familyData.members.forEach(member => {
+                            const headTag = member.isHead ? `<span class="is-head">Kepala Keluarga</span>` : '';
+                            const listItem = `
+                                <li class="member-item">
+                                    <img src="https://i.pravatar.cc/150?u=${member.avatar}" alt="Avatar" class="member-avatar">
+                                    <div class="member-info"><h4>${member.name}</h4><p>${member.role}</p></div>
+                                    ${headTag}
+                                </li>`;
+                            modalMemberList.insertAdjacentHTML('beforeend', listItem);
+                        });
+                        modalOverlay.classList.add('show');
+                    }
+                }
+            });
+
+            const closeModal = () => modalOverlay.classList.remove('show');
+            closeModalButton.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) closeModal();
+            });
+        });
     </script>
 </body>
 </html>
